@@ -3,7 +3,7 @@ from process import Process
 from scheduler.scheduler_base import Scheduler
 from RBTree import RedBlackTree
 
-class CFS(Scheduler):
+class CFS_NoBuffer(Scheduler):
     def schedule(self, processes: List[Process]) -> List[Any]:
         current_time = 0
         completed = set()
@@ -12,22 +12,16 @@ class CFS(Scheduler):
         incoming = sorted(processes, key=lambda p: p.arrival_time)
         min_vruntime = 0.0
         
-        # Tunable parameters
-        latency_buffer = 6.0 # Allow some preemption advantage for waking tasks
-        
         while len(completed) < len(processes):
             # 1. Handle Arrivals
             while incoming and incoming[0].arrival_time <= current_time:
                 p = incoming.pop(0)
                 
-                # Sleeper Fairness:
-                # If a task arrives late (simulating waking up), it shouldn't start at 0 
-                # if the system has been running for a while (min_vruntime is high).
-                # However, to ensure it gets to run (preempt), we give it slightly less than min_vruntime.
-                if p.arrival_time > 0:
-                    p.vruntime = max(0.0, min_vruntime - latency_buffer)
-                else:
-                    p.vruntime = 0.0
+                # NO Sleeper Fairness / Latency Buffer:
+                # We do NOT adjust vruntime based on min_vruntime.
+                # The process keeps its initial vruntime (0.0) or whatever it had.
+                # This allows late arrivals to potentially monopolize the CPU 
+                # if min_vruntime is high.
                 
                 self.add_to_tree(ready_queue, p)
 
