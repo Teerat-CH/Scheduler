@@ -4,7 +4,7 @@ from scheduler.scheduler_base import Scheduler
 from RBTree import RedBlackTree
 
 class CFS(Scheduler):
-    def __init__(self, name="CFS", latency_buffer: float = 6.0, target_latency: float = 1.0, min_time_slice: float = 0.2):
+    def __init__(self, name="CFS", latency_buffer: float = 10, target_latency: float = 20, min_time_slice: float = 4):
         self.name = name
         self.latency_buffer = latency_buffer
         self.target_latency = target_latency
@@ -17,7 +17,6 @@ class CFS(Scheduler):
         incoming = sorted(processes, key=lambda p: p.arrival_time)
         min_vruntime = 0.0
         
-        # Currently running process and its remaining time slice
         current_process = None
         time_slice_remaining = 0
         

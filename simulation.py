@@ -34,7 +34,8 @@ def calculate_metrics(processes: List[Process]):
         min_arrival_time = min(min_arrival_time, p.arrival_time)
 
     total_time = max_completion_time - min_arrival_time
-    throughput = n / total_time if total_time > 0 else 0
+    # 1000 since time in milliseconds
+    throughput = 1000 * n / total_time if total_time > 0 else 0
 
     return {
         "avg_turnaround": total_turnaround / n,
@@ -84,8 +85,8 @@ if __name__ == "__main__":
         FCFS(),
         SJF(),
         PriorityScheduler(),
-        RoundRobin(time_slice=2),
-        CFS("CFS", latency_buffer=2.0),
+        RoundRobin(time_slice=10),
+        CFS("CFS", latency_buffer=10),
         CFS("CFS_NoBuffer", latency_buffer=-1)
     ]
 
