@@ -4,7 +4,8 @@ from scheduler.scheduler_base import Scheduler
 from RBTree import RedBlackTree
 
 class CFS(Scheduler):
-    def __init__(self, latency_buffer: float = 6.0):
+    def __init__(self, name, latency_buffer: float = 6.0):
+        self.name = name
         self.latency_buffer = latency_buffer
 
     def schedule(self, processes: List[Process]):
