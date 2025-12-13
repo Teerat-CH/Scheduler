@@ -8,6 +8,8 @@ def get_test_case_1():
     ]
 
 def get_test_case_2():
+    # Right now this test case don't really show the difference between priority scheduling because no matter out your prioritize,
+    # the turn around and response time will be the same since we have same duration for all processes.
     return [
         Process("A", 0, 12, 1),
         Process("B", 0, 12, 2)
