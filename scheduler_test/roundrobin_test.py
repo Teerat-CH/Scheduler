@@ -1,9 +1,9 @@
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import unittest
 from process import Process
 from scheduler.round_robin import RoundRobin
-
-import sys, os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 class TestRoundRobin(unittest.TestCase):
 
