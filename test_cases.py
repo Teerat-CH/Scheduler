@@ -40,5 +40,5 @@ def get_test_case_6():
     # Expected behavior with sleeper fairness: B should not monopolize the CPU; they should share it.
     return [
         Process("A", 0, 50, 1),
-        Process("B", 25, 50, 1)
+        Process("B", 49, 50, 1)
     ]
