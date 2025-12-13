@@ -49,7 +49,7 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
     for scheduler in schedulers:
         # Deep copy processes to ensure fresh state for each scheduler
         test_processes = [copy.deepcopy(p) for p in processes]
-        scheduler_name = scheduler.__class__.__name__
+        scheduler_name = scheduler.name if hasattr(scheduler, 'name') else scheduler.__class__.__name__
         
         scheduler.schedule(test_processes)
         metrics = calculate_metrics(test_processes)
@@ -85,8 +85,8 @@ if __name__ == "__main__":
         SJF(),
         PriorityScheduler(),
         RoundRobin(time_quantum=2),
-        CFS(latency_buffer=6.0),
-        CFS(latency_buffer=-1)
+        CFS("CFS", latency_buffer=2.0),
+        CFS("CFS_NoBuffer", latency_buffer=-1)
     ]
 
     run_test_case("Test Case 1: Equal Weight Processes", get_test_case_1(), schedulers)
