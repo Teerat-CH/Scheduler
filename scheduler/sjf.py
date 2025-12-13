@@ -3,7 +3,7 @@ from process import Process
 from scheduler.scheduler_base import Scheduler
 
 class SJF(Scheduler):
-    def schedule(self, processes: List[Process]) -> List[Any]:
+    def schedule(self, processes: List[Process]):
         """
         Shortest Job First (SJF) scheduling algorithm (non-preemptive).
         Selects the process with the shortest duration from the ready queue.
