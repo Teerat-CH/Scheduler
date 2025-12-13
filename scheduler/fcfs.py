@@ -3,7 +3,7 @@ from process import Process
 from scheduler.scheduler_base import Scheduler
 
 class FCFS(Scheduler):
-    def schedule(self, processes: List[Process]) -> List[Any]:
+    def schedule(self, processes: List[Process]):
         """
         First-Come-First-Served (FCFS) scheduling algorithm.
         Non-preemptive: processes are executed in order of arrival time.
