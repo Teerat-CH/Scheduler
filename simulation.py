@@ -1,4 +1,5 @@
 import copy
+import csv
 from typing import List, Dict, Any
 from process import Process
 from scheduler.scheduler_base import Scheduler
@@ -83,8 +84,8 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
               f"{row['Avg Response']:<{col_widths[2]}.2f}"
               f"{row['Avg Waiting']:<{col_widths[3]}.2f}"
               f"{row['Throughput']:<{col_widths[4]}.5f}")
-    print("-" * len(header_row))
-
+    print("-" * len(header_row))    
+    return results
 if __name__ == "__main__":
     schedulers = [
         FCFS(),
@@ -95,9 +96,26 @@ if __name__ == "__main__":
         CFS("CFS_NoBuffer", latency_buffer=-1)
     ]
 
-    run_test_case("Test Case 1: Equal Weight Processes", get_test_case_1(), schedulers)
-    run_test_case("Test Case 2: Different Weights", get_test_case_2(), schedulers)
-    run_test_case("Test Case 3: Late Arrival Preemption", get_test_case_3(), schedulers)
-    run_test_case("Test Case 4: Many Short Jobs + One Long Job", get_test_case_4(), schedulers)
-    run_test_case("Test Case 5: CPU Idle Period + New Arrival", get_test_case_5(), schedulers)
-    run_test_case("Test Case 6: Sleeper Fairness / Gaming the Scheduler", get_test_case_6(), schedulers)
+    all_results = []
+
+    def run_and_store(name, processes):
+        results = run_test_case(name, processes, schedulers)
+        for r in results:
+            r['Test Case'] = name
+            all_results.append(r)
+
+    run_and_store("Test Case 1: Equal Weight Processes", get_test_case_1())
+    run_and_store("Test Case 2: Different Weights", get_test_case_2())
+    run_and_store("Test Case 3: Late Arrival Preemption", get_test_case_3())
+    run_and_store("Test Case 4: Many Short Jobs + One Long Job", get_test_case_4())
+    run_and_store("Test Case 5: CPU Idle Period + New Arrival", get_test_case_5())
+    run_and_store("Test Case 6: Sleeper Fairness / Gaming the Scheduler", get_test_case_6())
+
+    # Export to CSV
+    if all_results:
+        fieldnames = ["Test Case", "Scheduler", "Avg Turnaround", "Avg Response", "Avg Waiting", "Throughput"]
+        with open('scheduler_results.csv', 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(all_results)
+        print(f"\nResults exported to scheduler_results.csv")
