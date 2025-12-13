@@ -4,8 +4,8 @@ from scheduler.scheduler_base import Scheduler
 from collections import deque
 
 class RoundRobin(Scheduler):
-    def __init__(self, time_quantum: int = 2):
-        self.time_quantum = time_quantum
+    def __init__(self, time_slice: int = 2):
+        self.time_slice = time_slice
 
     def schedule(self, processes: List[Process]):
         current_time = 0
@@ -36,7 +36,7 @@ class RoundRobin(Scheduler):
                 process.start_time = current_time
                 process.response_time = current_time - process.arrival_time
 
-            execution_time = min(self.time_quantum, process.remaining_time)
+            execution_time = min(self.time_slice, process.remaining_time)
             
             current_time += execution_time
             process.remaining_time -= execution_time
