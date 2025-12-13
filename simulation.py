@@ -19,10 +19,11 @@ from test_cases import (
 def calculate_metrics(processes: List[Process]):
     total_turnaround = 0
     total_response = 0
+    total_waiting = 0
     n = len(processes)
     
     if n == 0:
-        return {"avg_turnaround": 0, "avg_response": 0, "throughput": 0}
+        return {"avg_turnaround": 0, "avg_response": 0, "avg_waiting": 0, "throughput": 0}
 
     max_completion_time = 0
     min_arrival_time = float('inf')
@@ -30,6 +31,7 @@ def calculate_metrics(processes: List[Process]):
     for p in processes:
         total_turnaround += p.turnaround_time
         total_response += p.response_time
+        total_waiting += p.waiting_time
         max_completion_time = max(max_completion_time, p.completion_time)
         min_arrival_time = min(min_arrival_time, p.arrival_time)
 
@@ -40,6 +42,7 @@ def calculate_metrics(processes: List[Process]):
     return {
         "avg_turnaround": total_turnaround / n,
         "avg_response": total_response / n,
+        "avg_waiting": total_waiting / n,
         "throughput": throughput
     }
 
@@ -58,13 +61,14 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
             "Scheduler": scheduler_name,
             "Avg Turnaround": metrics['avg_turnaround'],
             "Avg Response": metrics['avg_response'],
+            "Avg Waiting": metrics['avg_waiting'],
             "Throughput": metrics['throughput']
         })
 
     # Print Table
-    headers = ["Scheduler", "Avg Turnaround", "Avg Response", "Throughput"]
+    headers = ["Scheduler", "Avg Turnaround", "Avg Response", "Avg Waiting", "Throughput"]
     # Define column widths
-    col_widths = [20, 18, 18, 15]
+    col_widths = [20, 18, 18, 18, 15]
     
     # Print Header
     header_row = "".join(f"{h:<{w}}" for h, w in zip(headers, col_widths))
@@ -77,7 +81,8 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
         print(f"{row['Scheduler']:<{col_widths[0]}}"
               f"{row['Avg Turnaround']:<{col_widths[1]}.2f}"
               f"{row['Avg Response']:<{col_widths[2]}.2f}"
-              f"{row['Throughput']:<{col_widths[3]}.2f}")
+              f"{row['Avg Waiting']:<{col_widths[3]}.2f}"
+              f"{row['Throughput']:<{col_widths[4]}.5f}")
     print("-" * len(header_row))
 
 if __name__ == "__main__":
