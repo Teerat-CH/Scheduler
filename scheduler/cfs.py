@@ -4,7 +4,10 @@ from scheduler.scheduler_base import Scheduler
 from RBTree import RedBlackTree
 
 class CFS(Scheduler):
-    def schedule(self, processes: List[Process]) -> List[Any]:
+    def __init__(self, latency_buffer: float = 6.0):
+        self.latency_buffer = latency_buffer
+
+    def schedule(self, processes: List[Process]):
         current_time = 0
         completed = set()
         ready_queue = RedBlackTree()
@@ -12,22 +15,23 @@ class CFS(Scheduler):
         incoming = sorted(processes, key=lambda p: p.arrival_time)
         min_vruntime = 0.0
         
-        # Tunable parameters
-        latency_buffer = 6.0 # Allow some preemption advantage for waking tasks
-        
         while len(completed) < len(processes):
             # 1. Handle Arrivals
             while incoming and incoming[0].arrival_time <= current_time:
                 p = incoming.pop(0)
                 
-                # Sleeper Fairness:
-                # If a task arrives late (simulating waking up), it shouldn't start at 0 
-                # if the system has been running for a while (min_vruntime is high).
-                # However, to ensure it gets to run (preempt), we give it slightly less than min_vruntime.
-                if p.arrival_time > 0:
-                    p.vruntime = max(0.0, min_vruntime - latency_buffer)
+                # Sleeper Fairness Logic
+                if self.latency_buffer != -1:
+                    # If a task arrives late (simulating waking up), it shouldn't start at 0 
+                    # if the system has been running for a while (min_vruntime is high).
+                    # However, to ensure it gets to run (preempt), we give it slightly less than min_vruntime.
+                    if p.arrival_time > 0:
+                        p.vruntime = max(0.0, min_vruntime - self.latency_buffer)
+                    else:
+                        p.vruntime = 0.0
                 else:
-                    p.vruntime = 0.0
+                    # No buffer: process keeps its initial vruntime (0.0)
+                    pass
                 
                 self.add_to_tree(ready_queue, p)
 
@@ -70,7 +74,6 @@ class CFS(Scheduler):
             
             current_time += 1
             
-        return []
 
     def add_to_tree(self, tree, process):
         # Handle vruntime collisions by adding small epsilon

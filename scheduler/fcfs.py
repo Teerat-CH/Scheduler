@@ -3,6 +3,6 @@ from process import Process
 from scheduler.scheduler_base import Scheduler
 
 class FCFS(Scheduler):
-    def schedule(self, processes: List[Process]) -> List[Any]:
+    def schedule(self, processes: List[Process]):
         # TODO: Implement FCFS scheduling
         pass

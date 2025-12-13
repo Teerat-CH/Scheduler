@@ -85,7 +85,8 @@ if __name__ == "__main__":
         SJF(),
         PriorityScheduler(),
         RoundRobin(time_quantum=2),
-        CFS()
+        CFS(latency_buffer=6.0),
+        CFS(latency_buffer=-1)
     ]
 
     run_test_case("Test Case 1: Equal Weight Processes", get_test_case_1(), schedulers)
