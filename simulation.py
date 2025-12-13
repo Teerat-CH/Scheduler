@@ -12,7 +12,8 @@ from test_cases import (
     get_test_case_2,
     get_test_case_3,
     get_test_case_4,
-    get_test_case_5
+    get_test_case_5,
+    get_test_case_6
 )
 
 def calculate_metrics(processes: List[Process]):
@@ -41,22 +42,42 @@ def calculate_metrics(processes: List[Process]):
         "throughput": throughput
     }
 
-def print_metrics(name: str, processes: List[Process]):
-    metrics = calculate_metrics(processes)
-    print(f"--- {name} Results ---")
-    print(f"Average Turnaround Time: {metrics['avg_turnaround']:.2f}")
-    print(f"Average Response Time: {metrics['avg_response']:.2f}")
-    print(f"Throughput: {metrics['throughput']:.2f} processes/unit time")
-    print("-" * 30)
-
 def run_test_case(name: str, processes: List[Process], schedulers: List[Scheduler]):
+    print(f"\n=== {name} ===")
+    
+    results = []
     for scheduler in schedulers:
+        # Deep copy processes to ensure fresh state for each scheduler
         test_processes = [copy.deepcopy(p) for p in processes]
         scheduler_name = scheduler.__class__.__name__
-        print(f"Running {scheduler_name}...")
+        
         scheduler.schedule(test_processes)
-        print_metrics(scheduler_name, test_processes)
-    print("\n")
+        metrics = calculate_metrics(test_processes)
+        results.append({
+            "Scheduler": scheduler_name,
+            "Avg Turnaround": metrics['avg_turnaround'],
+            "Avg Response": metrics['avg_response'],
+            "Throughput": metrics['throughput']
+        })
+
+    # Print Table
+    headers = ["Scheduler", "Avg Turnaround", "Avg Response", "Throughput"]
+    # Define column widths
+    col_widths = [20, 18, 18, 15]
+    
+    # Print Header
+    header_row = "".join(f"{h:<{w}}" for h, w in zip(headers, col_widths))
+    print("-" * len(header_row))
+    print(header_row)
+    print("-" * len(header_row))
+    
+    # Print Rows
+    for row in results:
+        print(f"{row['Scheduler']:<{col_widths[0]}}"
+              f"{row['Avg Turnaround']:<{col_widths[1]}.2f}"
+              f"{row['Avg Response']:<{col_widths[2]}.2f}"
+              f"{row['Throughput']:<{col_widths[3]}.2f}")
+    print("-" * len(header_row))
 
 if __name__ == "__main__":
     schedulers = [
@@ -72,3 +93,4 @@ if __name__ == "__main__":
     run_test_case("Test Case 3: Late Arrival Preemption", get_test_case_3(), schedulers)
     run_test_case("Test Case 4: Many Short Jobs + One Long Job", get_test_case_4(), schedulers)
     run_test_case("Test Case 5: CPU Idle Period + New Arrival", get_test_case_5(), schedulers)
+    run_test_case("Test Case 6: Sleeper Fairness / Gaming the Scheduler", get_test_case_6(), schedulers)
