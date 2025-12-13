@@ -85,7 +85,7 @@ if __name__ == "__main__":
         SJF(),
         PriorityScheduler(),
         RoundRobin(time_quantum=2),
-        CFS("CFS", latency_buffer=6.0),
+        CFS("CFS", latency_buffer=2.0),
         CFS("CFS_NoBuffer", latency_buffer=-1)
     ]
 

@@ -12,7 +12,7 @@ def get_test_case_2():
     # the turn around and response time will be the same since we have same duration for all processes.
     return [
         Process("A", 0, 12, 1),
-        Process("B", 0, 12, 2)
+        Process("B", 0, 36, 2)
     ]
 
 def get_test_case_3():
