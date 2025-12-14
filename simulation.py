@@ -14,7 +14,8 @@ from test_cases import (
     get_test_case_3,
     get_test_case_4,
     get_test_case_5,
-    get_test_case_6
+    get_test_case_6,
+    get_test_case_7
 )
 
 def calculate_metrics(processes: List[Process]):
@@ -52,7 +53,7 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
     
     results = []
     for scheduler in schedulers:
-        # Deep copy processes to ensure fresh state for each scheduler
+        # deep copy processes
         test_processes = [copy.deepcopy(p) for p in processes]
         scheduler_name = scheduler.name if hasattr(scheduler, 'name') else scheduler.__class__.__name__
         
@@ -66,24 +67,20 @@ def run_test_case(name: str, processes: List[Process], schedulers: List[Schedule
             "Throughput": metrics['throughput']
         })
 
-    # Print Table
     headers = ["Scheduler", "Avg Turnaround", "Avg Response", "Avg Waiting", "Throughput"]
-    # Define column widths
     col_widths = [20, 18, 18, 18, 15]
     
-    # Print Header
     header_row = "".join(f"{h:<{w}}" for h, w in zip(headers, col_widths))
     print("-" * len(header_row))
     print(header_row)
     print("-" * len(header_row))
     
-    # Print Rows
     for row in results:
         print(f"{row['Scheduler']:<{col_widths[0]}}"
-              f"{row['Avg Turnaround']:<{col_widths[1]}.2f}"
+              f"{row['Avg Turnaround']:<{col_widths[1]}.0f}"
               f"{row['Avg Response']:<{col_widths[2]}.2f}"
-              f"{row['Avg Waiting']:<{col_widths[3]}.2f}"
-              f"{row['Throughput']:<{col_widths[4]}.5f}")
+              f"{row['Avg Waiting']:<{col_widths[3]}.1f}"
+              f"{row['Throughput']:<{col_widths[4]}.2f}")
     print("-" * len(header_row))    
     return results
 if __name__ == "__main__":
@@ -110,8 +107,9 @@ if __name__ == "__main__":
     run_and_store("Test Case 4: Many Short Jobs + One Long Job", get_test_case_4())
     run_and_store("Test Case 5: CPU Idle Period + New Arrival", get_test_case_5())
     run_and_store("Test Case 6: Sleeper Fairness / Gaming the Scheduler", get_test_case_6())
+    run_and_store("Test Case 7: Many Equal Processes", get_test_case_7())
 
-    # Export to CSV
+    # csv export
     if all_results:
         fieldnames = ["Test Case", "Scheduler", "Avg Turnaround", "Avg Response", "Avg Waiting", "Throughput"]
         with open('scheduler_results.csv', 'w', newline='') as csvfile:

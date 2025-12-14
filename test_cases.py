@@ -45,3 +45,15 @@ def get_test_case_6():
         Process("B", 49000, 50000, 1),
         Process("C", 49000, 30000, 1),
     ]
+
+
+def get_test_case_7():
+    return [
+        Process("A", 0, 10000, 1),
+        Process("B", 0, 10000, 1),
+        Process("C", 0, 10000, 1),
+        Process("D", 0, 10000, 1),
+        Process("E", 0, 10000, 1),
+        Process("F", 0, 10000, 1),
+        Process("G", 0, 10000, 1)
+    ]
